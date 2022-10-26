@@ -24,6 +24,7 @@ from __future__ import print_function
 import time
 
 import google.auth
+import sys
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import os.path
@@ -233,22 +234,23 @@ if __name__ == '__main__':
     # get row data, then loop through & process each form letter
     data = get_data(SOURCE)  # get data from data source
     for i, row in enumerate(data):
-        merge.update(dict(zip(COLUMNS, row)))
-        doc = DOCS.documents().get(documentId=merge_template(DOCS_FILE_ID, SOURCE, DRIVE)).execute()
-        doc_content = doc.get('body').get('content')
+        try:
+            merge.update(dict(zip(COLUMNS, row)))
+            doc = DOCS.documents().get(documentId=merge_template(DOCS_FILE_ID, SOURCE, DRIVE)).execute()
+            doc_content = doc.get('body').get('content')
 
-        EMAILROW = SHEETS.spreadsheets().values().get(spreadsheetId=SHEETS_FILE_ID,
+            EMAILROW = SHEETS.spreadsheets().values().get(spreadsheetId=SHEETS_FILE_ID,
                                                range='Sheet1').execute().get(
-        'values')[i+1:i+2]
+            'values')[i+1:i+2]
+            EMAILROW = EMAILROW[0]
 
-        EMAILROW = EMAILROW[0]
+            EMAIL_TO =  EMAILROW[0]
+            EMAIL_FROM =  #Enter your email address here as a string
+            EMAIL_SUBJECT = #Enter your email subject here as a string
+            EMAIL_BODY = read_structural_elements(doc_content)
 
-        EMAIL_TO =  EMAILROW[0]
-        EMAIL_FROM = #Enter your email here as a string
-        EMAIL_SUBJECT = #Enter your email subject here as a string
-        EMAIL_BODY = read_structural_elements(doc_content)
-
-        gmail_send_message(EMAIL_TO, EMAIL_FROM, EMAIL_SUBJECT, EMAIL_BODY)
-
-        print('Message sent!')
+            gmail_send_message(EMAIL_TO, EMAIL_FROM, EMAIL_SUBJECT, EMAIL_BODY)
+            print('Message sent!')
+        except:
+            sys.exit()
 # [END mail_merge_python]
