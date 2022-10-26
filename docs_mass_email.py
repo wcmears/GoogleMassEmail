@@ -34,8 +34,8 @@ import base64
 from email.message import EmailMessage
 
 # Fill-in IDs of your Docs template & any Sheets data source
-DOCS_FILE_ID = # Enter google docs file ID
-SHEETS_FILE_ID = # Enter sheets file ID
+DOCS_FILE_ID = # Enter google docs file ID as string
+SHEETS_FILE_ID = # Enter sheets file ID as string
 
 # authorization constants
 
